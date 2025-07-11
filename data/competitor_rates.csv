@@ -1,0 +1,21 @@
+Product,Bank,Rate (%)
+Savings,Bank A,1.37
+Savings,Bank B,2.48
+Savings,Bank C,0.71
+Savings,Bank D,0.8
+Savings,Bank E,0.53
+Checking,Bank A,1.08
+Checking,Bank B,2.24
+Checking,Bank C,2.29
+Checking,Bank D,0.92
+Checking,Bank E,1.43
+CD,Bank A,1.87
+CD,Bank B,1.52
+CD,Bank C,2.71
+CD,Bank D,1.45
+CD,Bank E,1.66
+Money Market,Bank A,2.89
+Money Market,Bank B,1.44
+Money Market,Bank C,3.22
+Money Market,Bank D,1.42
+Money Market,Bank E,0.79
