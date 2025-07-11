@@ -1,11 +1,16 @@
 
 import streamlit as st
 import pandas as pd
+import plotly.express as px
+from PIL import Image
 
-st.set_page_config(page_title="Deposit Pricing Demo", layout="wide")
+# Load logo and display at the top
+logo = Image.open("data/simon-kucher-logo.png")
+st.image(logo, width=200)
 
-st.title("Simon-Kucher | Deposit Pricing Demo Tool")
-st.markdown("This is a demo application for showcasing portfolio insights, competitor pricing, elasticity curves, and optimization simulation.")
+st.title("Simon-Kucher | Deposit Pricing Tool")
+st.subheader("Client Demo • July 2025")
+st.markdown("---")
 
 # Sidebar navigation
 menu = ["Dashboard", "Portfolio Analysis", "Competitor Rates", "Elasticity", "Optimization", "Constraints"]
@@ -26,20 +31,29 @@ balances, competitors, elasticity, optimization, constraints = load_data()
 if choice == "Dashboard":
     st.header("Portfolio Summary")
     latest_balances = balances.groupby("Product").last().reset_index()
-    st.dataframe(latest_balances)
+    col1, col2 = st.columns(2)
+    col1.metric("Total Balance", f"${latest_balances['Balance'].sum():,.0f}")
+    col2.metric("Number of Products", f"{latest_balances['Product'].nunique()}")
 
-    st.metric(label="Total Balance", value=f"${latest_balances['Balance'].sum():,.0f}")
-    st.metric(label="Number of Products", value=f"{latest_balances['Product'].nunique()}")
+    st.dataframe(latest_balances)
 
 elif choice == "Portfolio Analysis":
     st.header("Balance Trends by Product")
     pivot = balances.pivot(index="Date", columns="Product", values="Balance")
     pivot.index = pd.to_datetime(pivot.index)
-    st.line_chart(pivot)
+
+    fig = px.line(pivot, x=pivot.index, y=pivot.columns,
+                  labels={"value": "Balance", "Date": "Date"},
+                  title="Portfolio Balance Over Time")
+    st.plotly_chart(fig, use_container_width=True)
 
 elif choice == "Competitor Rates":
     st.header("Bank vs Competitor Rates")
     st.dataframe(competitors)
+
+    fig = px.bar(competitors, x="Bank", y="Rate (%)", color="Product",
+                 title="Competitor Rates by Product", barmode="group")
+    st.plotly_chart(fig, use_container_width=True)
 
 elif choice == "Elasticity":
     st.header("Elasticity Curves (Simulated)")
@@ -49,7 +63,9 @@ elif choice == "Optimization":
     st.header("Optimized Rate Scenarios")
     st.dataframe(optimization)
 
-    st.bar_chart(optimization.set_index("Product")[["Current Rate", "Optimized Rate"]])
+    fig = px.bar(optimization, x="Product", y=["Current Rate", "Optimized Rate"],
+                 title="Rate Comparison", barmode="group")
+    st.plotly_chart(fig, use_container_width=True)
 
 elif choice == "Constraints":
     st.header("Pricing Constraints")
